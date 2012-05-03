@@ -30,7 +30,7 @@ def get_entropy_vector(probability_matrix):
     for row in probability_matrix.keys():
         for pattern in probability_matrix[row].keys():
             if (not pattern in entropy.keys()):
-                sum([p*math.log(p)for p in [probability_matrix[r].get(pattern,0) for r in probability_matrix.keys()]])
+                entropy[pattern]=sum([p*math.log(p)for p in [probability_matrix[r].get(pattern,0) for r in probability_matrix.keys()]])
     return entropy
 
 def get_weight_vector(entropy_vector, num_rows):
@@ -72,5 +72,28 @@ def get_svd_from_frequency_matrix(frequency_matrix):
     log_frequency_matrix=update_to_log_frequency(frequency_matrix, weight_vector)
     return apply_svd(log_frequency_matrix, weight_vector.keys())
     
+def run_test():
+    """
+        Unit tests for LRA Step 3
+    """
+    print
+    print "Unit tests - LRA Step 3"
+    print "======================="
+    print
+    frequency_mat={("work", "dog"):{("the"):10,("like","a"):8,("like","*"):12,("*","a"):16,("*"):14},
+                   ("office", "hound"):{("the"):10,("like","a"):8,("like","*"):12,("*","a"):16,("*"):14}}
+    print "Frequency matrix: "
+    for pair,patterns in frequency_mat.items(): print "\t"+str(pair)+" : "+str(patterns)
+    u,z,v=get_svd_from_frequency_matrix(frequency_mat)
+    print
+    print "SVD results"
+    print "\t U = "+str(u)
+    print "\t Z = "+str(z)
+    print "\t V = "+str(v)
+
+def main():
+    run_test()
     
+if __name__ == "__main__":
+    main()    
     

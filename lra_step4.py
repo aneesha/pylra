@@ -71,3 +71,36 @@ def calculate_word_pair_cosine_vector_matrix(projection_mat,word_pairs):
         calculate the word pair cosine vector matrix from the projection matrix
     """
     return get_word_pair_cosine_vector_matrix(get_cosine_vector_matrix(projection_mat),word_pairs)
+
+def run_test():
+    """
+        Unit tests for LRA Step 3
+    """
+    print
+    print "Unit tests - LRA Step 3"
+    print "======================="
+    print
+    frequency_mat={("work", "dog"):{("the"):10,("like","a"):8,("like","*"):12,("*","a"):16,("*"):14},
+                   ("office", "hound"):{("the"):10,("like","a"):8,("like","*"):12,("*","a"):16,("*"):14}}
+    import lra_step3
+    u,z,v=lra_step3.get_svd_from_frequency_matrix(frequency_mat)    
+    print "SVD values"
+    print "\t U = "+str(u)
+    print "\t Z = "+str(z)
+    print "\t V = "+str(v)
+    print
+    projection_matrix=get_projection_matrix(u, z, v)
+    print "Projection matrix"
+    for row in projection_matrix: print "\t"+str(row)
+    
+    print
+    cosine_vec_mat=calculate_word_pair_cosine_vector_matrix(projection_matrix,frequency_mat.keys())
+    print "Word pair cosine matrix"
+    for pair,features in cosine_vec_mat.items(): print "\t"+str(pair)+":"+str(features)
+
+def main():
+    run_test()
+    
+if __name__ == "__main__":
+    main()    
+ 
