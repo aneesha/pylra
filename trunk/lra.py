@@ -12,6 +12,8 @@ from lra_step4 import get_projection_matrix, \
 from lra_step5 import calculate_average_similarity
 import lra_step1
 import lra_step2
+import lra_step3
+import lra_step4
 
 def calculate_latent_relational_similarity(word_pair1,word_pair2):
     """
@@ -39,13 +41,11 @@ def calculate_latent_relational_similarity(word_pair1,word_pair2):
     #return the average cosine value for a given 2 word pair sets
     return calculate_average_similarity(set1,set2,word_pair_cosine_vector)
 
-def run_test():
-    pass
-
 def run_tests():
     lra_step1.run_test()
-    lra_step2.run_test()    
-    run_test()
+    lra_step2.run_test()
+    lra_step3.run_test()
+    lra_step4.run_test()          
     
 def main():
     run_tests()

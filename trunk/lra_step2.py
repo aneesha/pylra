@@ -4,7 +4,7 @@ Created on Apr 19, 2012
 @author: samindaw
 '''
 
-from SearchCorpus import GoogleSearchCorpus
+from search_corpus import GoogleSearchCorpus
 
 MAX_PHRASE=5
 MAX_PATTERNS=4000
@@ -19,7 +19,7 @@ def get_pair_occurance_pattern_frequency(word_pair, phrase_size=MAX_PHRASE, max_
     
     #whats returned from teh search corpus is a set of tuples (pattern,frequency). convert
     #it to a dictionary of pattern:frequency 
-    [pattern_vector.setdefault(pattern[0],pattern[1]) for pattern in gsc.search_pairs(word_pair,phrase_size)[:max_patterns]]
+    [pattern_vector.setdefault(pattern[0],pattern[1]) for pattern in gsc.search_pairs(word_pair,phrase_size=phrase_size)[:max_patterns]]
     return pattern_vector
 
 def get_pattern_frequencies_matrix(word_pairs,phrase_size=MAX_PHRASE, max_patterns=MAX_PATTERNS):
@@ -34,7 +34,19 @@ def get_pattern_frequencies_matrix(word_pairs,phrase_size=MAX_PHRASE, max_patter
     return pattern_matrix
 
 def run_test():
-    print get_pattern_frequencies_matrix(("cat","dog"),max_patterns=10)
+    """
+        Unit tests for LRA Step 2
+    """
+    print
+    print "Unit tests - LRA Step 2"
+    print "======================="
+    print
+    word_pair = ("work", "dog")
+    print "Pattern frequencies for word pair : "+str(word_pair)
+    for pair,value in get_pattern_frequencies_matrix([word_pair],max_patterns=10).items():
+        print "\t"+str(pair) 
+        for pattern,f in value.items():
+            print "\t\t"+str(pattern)+":"+str(f)
 
 def main():
     run_test()
