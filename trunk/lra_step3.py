@@ -13,14 +13,23 @@ def get_probability_matrix(frequency_matrix):
     """
     p={}
     total={}
+    collected_patterns=[]
+    [collected_patterns.append(pattern) for row,frequencies in frequency_matrix.items() for pattern in frequencies.keys() if not pattern in collected_patterns]
+        
     for row in frequency_matrix.keys():
         p[row]={}
-        for pattern,frequency in frequency_matrix[row].items():
+        for pattern in collected_patterns:
             if (not pattern in total.keys()):
                 total[pattern]=sum([frequency_matrix[r].get(pattern,0) for r in frequency_matrix.keys()])+len(frequency_matrix.keys())
             #adding additional 1 to the frequency to avoid 0 probability which could 
             #result exceptions when calculating the entropy (did the same for total as well above) 
-            p[row][pattern]=(frequency+1)/(1.0*total[pattern])
+            p[row][pattern]=((frequency_matrix[row].get(pattern,0)+1))/(1.0*total[pattern])
+#        for pattern,frequency in frequency_matrix[row].items():
+#            if (not pattern in total.keys()):
+#                total[pattern]=sum([frequency_matrix[r].get(pattern,0) for r in frequency_matrix.keys()])+len(frequency_matrix.keys())
+#            #adding additional 1 to the frequency to avoid 0 probability which could 
+#            #result exceptions when calculating the entropy (did the same for total as well above) 
+#            p[row][pattern]=(frequency+1)/(1.0*total[pattern])
     return p
 
 def get_entropy_vector(probability_matrix):
