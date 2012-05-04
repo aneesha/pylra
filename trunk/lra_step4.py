@@ -4,6 +4,7 @@ Created on May 3, 2012
 @author: samindaw
 '''
 from scipy import mat,transpose;
+import numpy
 
 TOP_NUM_SINGULAR_VALUES=300
 
@@ -59,11 +60,13 @@ def get_word_pair_cosine_vector_matrix(cosine_vector,word_pairs):
         match the word pairs to the cosine vector matrix and return a cosine 
         vector matrix having the word pairs as rows
     """
+    cosine_vector=numpy.squeeze(numpy.asarray(cosine_vector))
     result={}
     for row in range(len(cosine_vector)):
         result[word_pairs[row]]={}
         for col in range(len(cosine_vector[row])):
             result[word_pairs[row]][word_pairs[col]]=cosine_vector[row][col]
+    
     return result
 
 def calculate_word_pair_cosine_vector_matrix(projection_mat,word_pairs):
@@ -74,10 +77,10 @@ def calculate_word_pair_cosine_vector_matrix(projection_mat,word_pairs):
 
 def run_test():
     """
-        Unit tests for LRA Step 3
+        Unit tests for LRA Step 4
     """
     print
-    print "Unit tests - LRA Step 3"
+    print "Unit tests - LRA Step 4"
     print "======================="
     print
     frequency_mat={("work", "dog"):{("the"):10,("like","a"):8,("like","*"):12,("*","a"):16,("*"):14},
@@ -102,5 +105,4 @@ def main():
     run_test()
     
 if __name__ == "__main__":
-    main()    
- 
+    main()

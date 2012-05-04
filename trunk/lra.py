@@ -10,10 +10,6 @@ from lra_step3 import get_svd_from_frequency_matrix
 from lra_step4 import get_projection_matrix, \
     calculate_word_pair_cosine_vector_matrix
 from lra_step5 import calculate_average_similarity
-import lra_step1
-import lra_step2
-import lra_step3
-import lra_step4
 
 def calculate_latent_relational_similarity(word_pair1,word_pair2):
     """
@@ -42,10 +38,16 @@ def calculate_latent_relational_similarity(word_pair1,word_pair2):
     return calculate_average_similarity(set1,set2,word_pair_cosine_vector)
 
 def run_tests():
+    import lra_step1
+    import lra_step2
+    import lra_step3
+    import lra_step4
+    import lra_step5
     lra_step1.run_test()
     lra_step2.run_test()
     lra_step3.run_test()
-    lra_step4.run_test()          
+    lra_step4.run_test()
+    lra_step5.run_test()          
     
 def main():
     run_tests()
