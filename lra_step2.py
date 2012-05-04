@@ -8,13 +8,14 @@ from search_corpus import GoogleSearchCorpus
 
 MAX_PHRASE=5
 MAX_PATTERNS=4000
-
+ENABLE_CACHING=True
 def get_pair_occurance_pattern_frequency(word_pair, phrase_size=MAX_PHRASE, max_patterns=MAX_PATTERNS):
     """
         return a frequency vector for word patterns possible for the given word pair
     """
+    global ENABLE_CACHING
     #here we are using google to search for word pair occurances
-    gsc=GoogleSearchCorpus()
+    gsc=GoogleSearchCorpus(enable_caching=ENABLE_CACHING)
     pattern_vector={}
     
     #whats returned from teh search corpus is a set of tuples (pattern,frequency). convert
@@ -37,6 +38,8 @@ def run_test():
     """
         Unit tests for LRA Step 2
     """
+    global ENABLE_CACHING
+    ENABLE_CACHING=False
     print
     print "Unit tests - LRA Step 2"
     print "======================="

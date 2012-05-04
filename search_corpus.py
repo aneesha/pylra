@@ -52,7 +52,7 @@ class SearchCorpus:
             search & return frequencies of different word patterns of 
             which the word pairs occur in the corpus
         """
-        if (use_cache):
+        if (self.enable_caching and use_cache):
             search_pairs_v=self.search_pairs_cache(wordpair)
             if (search_pairs_v):
                 return search_pairs_v
@@ -61,14 +61,14 @@ class SearchCorpus:
         
         #remove occurances larger than a given window of words
         if (phrase_size):
-            occurances=[occurance for occurance in occurances if len(occurances)<=phrase_size]
+            occurances=[occurance for occurance in occurances if len(occurance)<=phrase_size]
         
         #extract all possible patterns using wild cards
         patterns=[]
         for occurance in occurances:
             word_set=occurance
             inside_w=word_set[1:-1]
-            patterns=self.get_patterns(inside_w)
+            patterns.extend(self.get_patterns(inside_w))
         #remove duplicates
         [patterns.remove(p) for p in list(patterns) if patterns.count(p)>1]
         
@@ -77,7 +77,7 @@ class SearchCorpus:
         for pattern in patterns:
             matches=0
             for occurance in occurances:
-                o=occurances[1:-1]
+                o=occurance[1:-1]
                 if (len(o)==len(pattern)):
                     found=True
                     for i in range(len(pattern)):
@@ -90,15 +90,17 @@ class SearchCorpus:
         
         #sort in desc the pattern list by frequency of each pattern occurrence in the corpus
         pattern_count=list(reversed(sorted(pattern_count,key=lambda x:x[1])))
-        self.search_pairs_cache_save(wordpair, pattern_count)
+        if self.enable_caching:
+            self.search_pairs_cache_save(wordpair, pattern_count)
         return pattern_count;
 
 class GoogleSearchCorpus(SearchCorpus):
     """
         Google as a corpus of search base 
     """
-    def __init__(self):
+    def __init__(self,enable_caching=True):
         self.gs=GoogleSearch(None)
+        self.enable_caching=enable_caching
     
     def get_occurances_cache(self, wordpair):
         return self.cache_manager.get_from_cache((wordpair,"get_occurances"))
@@ -107,7 +109,7 @@ class GoogleSearchCorpus(SearchCorpus):
         self.cache_manager.update_cache((wordpair,"get_occurances"), data)
         
     def get_occurances(self, wordpair, use_cache=True):
-        if (use_cache):
+        if (self.enable_caching and use_cache):
             c=self.get_occurances_cache(wordpair)
             if c:
                 return c
@@ -127,8 +129,9 @@ class GoogleSearchCorpus(SearchCorpus):
         #among the results search for the word pair phrases
         phrases=[]
         [phrases.extend(re.findall(r""+w1+" .*? "+w2+"",result.desc.encode('utf8').lower())) for result in allresults]
-        phrases=[phrase.split() for phrase in phrases]
-        self.get_occurances_save(wordpair, phrases)
+        phrases=[filter_garbage(phrase.split()) for phrase in phrases]
+        if self.enable_caching:
+            self.get_occurances_save(wordpair, phrases)
         return phrases
 
 class FileSearchCorpus(SearchCorpus):
@@ -144,9 +147,10 @@ class FileSearchCorpus(SearchCorpus):
         if not self.filename in self.CORPUS.keys(): self.CORPUS[self.filename]=nltk.data.load("file:"+self.filename, format="raw", cache=False)[:self.limit].lower().split()
         return self.CORPUS[self.filename]
 
-    def __init__(self,filename=None, limit=None):
+    def __init__(self,filename=None, limit=None, enable_caching=True):
         self.filename=filename
         self.limit=limit
+        self.enable_caching=enable_caching
     
     def get_occurances_cache(self, wordpair):
         return self.cache_manager.get_from_cache((wordpair,"get_occurances"))
@@ -155,7 +159,7 @@ class FileSearchCorpus(SearchCorpus):
         self.cache_manager.update_cache((wordpair,"get_occurances"), data)
         
     def get_occurances(self, wordpair, use_cache=True):
-        if (use_cache):
+        if (self.enable_caching and use_cache):
             c=self.get_occurances_cache(wordpair)
             if c:
                 return c
