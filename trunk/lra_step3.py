@@ -38,10 +38,8 @@ def get_entropy_vector(probability_matrix):
         of probabilities of each pattern for given word pair 
     """
     entropy={}
-    for row in probability_matrix.keys():
-        for pattern in probability_matrix[row].keys():
-            if (not pattern in entropy.keys()):
-                entropy[pattern]=sum([p*math.log(p)for p in [probability_matrix[r].get(pattern,0) for r in probability_matrix.keys()]])
+    for pattern in probability_matrix[probability_matrix.keys()[0]].keys():
+        entropy[pattern]=-sum([p*math.log(p)for p in [probability_matrix[r].get(pattern,0) for r in probability_matrix.keys()]])
     return entropy
 
 def get_weight_vector(entropy_vector, num_rows):
